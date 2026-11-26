@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Thrift Pilihan — Kurasi Gaya Vintage & Streetwear</title>
+    
+    <!-- Google Fonts: Playfair Display (Editorial Serif) & Plus Jakarta Sans (Clean Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF7F2',
+                        creamDark: '#F2ECE1',
+                        espresso: '#1C1917',
+                        espressoLight: '#44403C',
+                        sage: '#4D6B53',
+                        sageDark: '#3B5440',
+                        terracotta: '#B85D3B',
+                        terracottaDark: '#9A4B2E',
+                        gold: '#C8A97E',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 30px -10px rgba(28, 25, 23, 0.08)',
+                        'card': '0 4px 20px -2px rgba(28, 25, 23, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF7F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C8A97E;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #B85D3B;
+        }
+
+        /* Soft Reveal Animation (Intersection Observer) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Subtle Floating Animation for Hero Accent */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        /* Micro-interaction Pulse for Cart Badge */
+        @keyframes popBadge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        .badge-pop {
+            animation: popBadge 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Hide scrollbar for category pills on mobile */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-cream text-espresso font-sans antialiased selection:bg-sage selection:text-white overflow-x-hidden">
+
+    <!-- ==================== HEADER / NAVBAR ==================== -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-cream/85 backdrop-blur-md border-b border-espresso/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 rounded-full bg-espresso text-cream flex items-center justify-center font-serif italic font-bold text-xl transition-transform duration-300 group-hover:scale-105">
+                    A
+                </div>
+                <div>
+                    <span class="font-serif font-bold text-lg sm:text-xl tracking-tight text-espresso block leading-none">Arsip Vintage</span>
+                    <span class="text-[11px] uppercase tracking-[0.2em] text-terracotta font-semibold">Curated Thrift</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-espressoLight">
+                <a href="#beranda" class="hover:text-terracotta transition-colors">Beranda</a>
+                <a href="#katalog" class="hover:text-terracotta transition-colors">Katalog Koleksi</a>
+                <a href="#cara-order" class="hover:text-terracotta transition-colors">Cara Order</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Search Trigger Mobile / Quick Scroll -->
+                <a href="#katalog" onclick="setTimeout(() => document.getElementById('searchInput').focus(), 400)" aria-label="Cari Produk" class="p-2.5 rounded-full hover:bg-creamDark text-espresso transition-colors">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </a>
+
+                <!-- Cart Drawer Button -->
+                <button onclick="toggleCart(true)" class="relative flex items-center gap-2 bg-espresso hover:bg-espressoLight text-cream px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 shadow-sm active:scale-95">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 text-gold"></i>
+                    <span class="hidden sm:inline">Keranjang</span>
+                    <span id="navCartCount" class="bg-terracotta text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section id="beranda" class="relative pt-28 pb-16 sm:pt-36 sm:pb-24 overflow-hidden">
+        <!-- Decorative Warm Organic Shapes -->
+        <div class="absolute top-20 -right-24 w-96 h-96 bg-gold/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-10 -left-24 w-80 h-80 bg-sage/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                <!-- Left Editorial Copy -->
+                <div class="lg:col-span-7 space-y-6 reveal">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-creamDark border border-gold/40 text-xs font-semibold tracking-wider uppercase text-espressoLight">
+                        <span class="w-2 h-2 rounded-full bg-sage animate-pulse"></span>
+                        Batch #14 • Stok Terbatas (1 Item / Desain)
+                    </div>
+
+                    <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-espresso leading-[1.12] tracking-tight">
+                        Katalog Thrift Pilihan — <span class="italic font-normal text-terracotta">Kurasi Gaya Vintage</span> & Streetwear
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-espressoLight max-w-2xl leading-relaxed">
+                        Setiap potong pakaian memiliki cerita. Kami mengurasi jaket klasik, kemeja retro, celana *workwear*, topi, hingga sepatu pilihan yang telah dicuci bersih, wangi, dan siap memberi karakter baru pada gayamu.
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#katalog" class="inline-flex items-center gap-2.5 bg-sage hover:bg-sageDark text-white px-7 py-3.5 rounded-full font-medium text-sm sm:text-base transition-all duration-300 shadow-soft hover:-translate-y-0.5 active:scale-95">
+                            <span>Eksplorasi Katalog</span>
+                            <i data-lucide="arrow-down-right" class="w-4 h-4"></i>
+                        </a>
+                        <button onclick="openDirectWhatsApp()" class="inline-flex items-center gap-2 bg-white hover:bg-creamDark text-espresso border border-espresso/15 px-6 py-3.5 rounded-full font-medium text-sm sm:text-base transition-all duration-300">
+                            <i data-lucide="message-circle" class="w-4 h-4 text-sage"></i>
+                            <span>Tanya Admin WA</span>
+                        </button>
+                    </div>
+
+                    <!-- Trust Highlights -->
+                    <div class="grid grid-cols-3 gap-4 pt-6 border-t border-espresso/10 max-w-lg">
+                        <div>
+                            <p class="font-serif font-bold text-xl sm:text-2xl text-espresso">100%</p>
+                            <p class="text-xs text-espressoLight mt-0.5">Sudah Laundry & Steam</p>
+                        </div>
+                        <div>
+                            <p class="font-serif font-bold text-xl sm:text-2xl text-espresso">1 of 1</p>
+                            <p class="text-xs text-espressoLight mt-0.5">Item Eksklusif Unik</p>
+                        </div>
+                        <div>
+                            <p class="font-serif font-bold text-xl sm:text-2xl text-espresso">Jujur</p>
+                            <p class="text-xs text-espressoLight mt-0.5">Detail Ukuran & Minus</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Editorial Visual Collage -->
+                <div class="lg:col-span-5 relative reveal" style="transition-delay: 150ms;">
+                    <div class="relative rounded-3xl overflow-hidden shadow-soft aspect-[4/5] bg-creamDark border-4 border-white">
+                        <img 
+                            src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80" 
+                            alt="Koleksi Jaket Vintage Thrifting" 
+                            onerror="this.src='https://placehold.co/800x1000/F2ECE1/1C1917?text=Arsip+Vintage+Collection'"
+                            class="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-espresso/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-5 left-5 right-5 text-white">
+                            <span class="text-xs uppercase tracking-widest text-gold font-semibold">Highlight Pekan Ini</span>
+                            <p class="font-serif text-xl font-semibold mt-0.5">90s Retro Leather & Denim Archive</p>
+                        </div>
+                    </div>
+
+                    <!-- Floating Badge Card -->
+                    <div class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-soft border border-gold/30 absolute -bottom-5 -left-6 animate-float">
+                        <div class="w-11 h-11 rounded-xl bg-terracotta/10 text-terracotta flex items-center justify-center">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-espresso">Garansi Real Pict</p>
+                            <p class="text-[11px] text-espressoLight">Foto asli & cek detail sebelum kirim</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== KATALOG SECTION ==================== -->
+    <section id="katalog" class="py-12 sm:py-20 bg-creamDark/45 border-t border-espresso/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 reveal">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-[0.2em] text-terracotta">Pilihan Terkurasi</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-espresso mt-1">Koleksi Tersedia</h2>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="relative w-full md:w-80">
+                    <i data-lucide="search" class="w-4 h-4 text-espressoLight absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Cari jaket, denim, topi, ukuran..." 
+                        oninput="handleSearch(this.value)"
+                        class="w-full pl-11 pr-10 py-3 rounded-full bg-white border border-espresso/15 text-sm text-espresso placeholder:text-espressoLight/60 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
+                    >
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-espressoLight hover:text-espresso">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interactive Category Filter Pills -->
+            <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-4 mb-8 reveal" id="categoryFilters">
+                <button onclick="filterCategory('Semua')" data-cat="Semua" class="cat-btn active shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-espresso text-cream shadow-sm">
+                    Semua Koleksi
+                </button>
+                <button onclick="filterCategory('Baju')" data-cat="Baju" class="cat-btn shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-white text-espressoLight hover:bg-creamDark border border-espresso/10">
+                    Baju & Kemeja
+                </button>
+                <button onclick="filterCategory('Jaket')" data-cat="Jaket" class="cat-btn shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-white text-espressoLight hover:bg-creamDark border border-espresso/10">
+                    Jaket & Outer
+                </button>
+                <button onclick="filterCategory('Celana')" data-cat="Celana" class="cat-btn shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-white text-espressoLight hover:bg-creamDark border border-espresso/10">
+                    Celana
+                </button>
+                <button onclick="filterCategory('Topi')" data-cat="Topi" class="cat-btn shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-white text-espressoLight hover:bg-creamDark border border-espresso/10">
+                    Topi
+                </button>
+                <button onclick="filterCategory('Sepatu')" data-cat="Sepatu" class="cat-btn shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-white text-espressoLight hover:bg-creamDark border border-espresso/10">
+                    Sepatu
+                </button>
+            </div>
+
+            <!-- Product Count & Sort Info -->
+            <div class="flex items-center justify-between text-xs sm:text-sm text-espressoLight mb-6">
+                <p>Menampilkan <span id="productCount" class="font-bold text-espresso">10</span> item pilihan</p>
+                <span class="italic text-espressoLight/80">*Klik kartu untuk detail ukuran P x L</span>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-7">
+                <!-- Products will be injected dynamically via JavaScript -->
+            </div>
+
+            <!-- Empty State when search/filter finds nothing -->
+            <div id="emptyState" class="hidden text-center py-16 px-4 bg-white rounded-3xl border border-espresso/10 my-6">
+                <div class="w-16 h-16 rounded-full bg-creamDark text-espressoLight mx-auto flex items-center justify-center mb-4">
+                    <i data-lucide="search-x" class="w-8 h-8"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-bold text-espresso">Produk tidak ditemukan</h3>
+                <p class="text-sm text-espressoLight mt-1 max-w-md mx-auto">Coba gunakan kata kunci lain atau pilih kategori "Semua Koleksi" untuk melihat item thrift yang tersedia.</p>
+                <button onclick="resetFilters()" class="mt-5 px-6 py-2.5 rounded-full bg-espresso text-cream text-sm font-medium hover:bg-espressoLight transition-colors">
+                    Reset Pencarian
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CARA ORDER SECTION ==================== -->
+    <section id="cara-order" class="py-16 sm:py-20 bg-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-bold uppercase tracking-[0.2em] text-sage">Mudah & Cepat</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-espresso mt-1">Cara Pemesanan via WhatsApp</h2>
+                <p class="text-sm sm:text-base text-espressoLight mt-2">Sistem booking cepat tanpa ribet registrasi akun. Siapa cepat dia dapat karena setiap item hanya tersedia 1 stok.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                <div class="bg-white p-7 rounded-3xl border border-espresso/10 shadow-card">
+                    <div class="w-12 h-12 rounded-2xl bg-sage/10 text-sage font-serif font-bold text-xl flex items-center justify-center mb-5">01</div>
+                    <h3 class="font-serif text-xl font-bold text-espresso mb-2">Pilih & Cek Detail Ukuran</h3>
+                    <p class="text-sm text-espressoLight leading-relaxed">Klik pada foto produk untuk melihat panjang x lebar (cm), kondisi kain, dan catatan minus secara transparan.</p>
+                </div>
+
+                <div class="bg-white p-7 rounded-3xl border border-espresso/10 shadow-card">
+                    <div class="w-12 h-12 rounded-2xl bg-terracotta/10 text-terracotta font-serif font-bold text-xl flex items-center justify-center mb-5">02</div>
+                    <h3 class="font-serif text-xl font-bold text-espresso mb-2">Masukkan ke Keranjang</h3>
+                    <p class="text-sm text-espressoLight leading-relaxed">Tambahkan satu atau beberapa item sekaligus ke keranjang belanja, lalu isi nama dan alamat pengirimanmu.</p>
+                </div>
+
+                <div class="bg-white p-7 rounded-3xl border border-espresso/10 shadow-card">
+                    <div class="w-12 h-12 rounded-2xl bg-gold/25 text-espresso font-serif font-bold text-xl flex items-center justify-center mb-5">03</div>
+                    <h3 class="font-serif text-xl font-bold text-espresso mb-2">Kirim Format ke WhatsApp</h3>
+                    <p class="text-sm text-espressoLight leading-relaxed">Klik tombol Order WhatsApp. Pesan rincian order otomatis terisi rapi untuk konfirmasi ongkir & pembayaran.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-espresso text-cream/85 py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-2.5">
+                    <span class="font-serif italic font-bold text-2xl text-cream">Arsip Vintage</span>
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-gold/20 text-gold">Thrift Store</span>
+                </div>
+                <p class="text-xs text-cream/60 mt-2">Kurasi Pakaian, Jaket, Celana, Topi & Sepatu Thrifting Berkualitas.</p>
+            </div>
+
+            <div class="flex items-center gap-6 text-xs text-cream/70">
+                <a href="#beranda" class="hover:text-gold transition-colors">Beranda</a>
+                <a href="#katalog" class="hover:text-gold transition-colors">Katalog</a>
+                <button onclick="toggleCart(true)" class="hover:text-gold transition-colors">Keranjang Belanja</button>
+            </div>
+
+            <p class="text-xs text-cream/50">&copy; 2025 Arsip Vintage Thrift. Semua Hak Dilindungi.</p>
+        </div>
+    </footer>
+
+    <!-- ==================== FLOATING WHATSAPP BUTTON ==================== -->
+    <button 
+        onclick="openDirectWhatsApp()" 
+        aria-label="Chat WhatsApp Penjual"
+        class="fixed bottom-6 right-6 z-30 flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white px-4 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:scale-95 group"
+    >
+        <i data-lucide="message-circle" class="w-6 h-6 fill-white/20"></i>
+        <span class="text-sm font-semibold hidden sm:inline pr-1">Chat Penjual</span>
+    </button>
+
+    <!-- ==================== PRODUCT DETAIL MODAL ==================== -->
+    <div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6">
+        <!-- Backdrop -->
+        <div onclick="closeProductModal()" class="fixed inset-0 bg-espresso/60 backdrop-blur-sm transition-opacity"></div>
+        
+        <!-- Modal Card -->
+        <div id="productModalContent" class="relative bg-cream w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl border border-gold/30 z-10 max-h-[90vh] flex flex-col md:flex-row transform transition-all duration-300 scale-95 opacity-0">
+            <!-- Close Button -->
+            <button onclick="closeProductModal()" aria-label="Tutup Detail" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-espresso flex items-center justify-center shadow-md transition-transform hover:rotate-90">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Product Image -->
+            <div class="w-full md:w-1/2 bg-creamDark relative aspect-square md:aspect-auto">
+                <img id="modalImg" src="" alt="Detail Produk" class="w-full h-full object-cover">
+                <span id="modalBadge" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold tracking-wide shadow-sm"></span>
+            </div>
+
+            <!-- Product Info -->
+            <div class="w-full md:w-1/2 p-6 sm:p-8 overflow-y-auto flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-terracotta mb-1">
+                        <span id="modalCategory">Kategori</span>
+                        <span>•</span>
+                        <span id="modalSizeBadge">Size L</span>
+                    </div>
+                    <h3 id="modalTitle" class="font-serif text-2xl sm:text-3xl font-bold text-espresso leading-tight">Nama Produk</h3>
+                    <p id="modalPrice" class="text-xl sm:text-2xl font-bold text-sage mt-2">Rp 0</p>
+
+                    <p id="modalDesc" class="text-sm text-espressoLight leading-relaxed mt-4">Deskripsi produk lengkap.</p>
+
+                    <!-- Spec Box -->
+                    <div class="mt-5 p-4 rounded-2xl bg-white border border-espresso/10 space-y-2.5 text-xs sm:text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-espressoLight">Ukuran Tag / Fit:</span>
+                            <span id="modalSize" class="font-semibold text-espresso">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-espressoLight">Dimensi (P x L / Insole):</span>
+                            <span id="modalDimensions" class="font-semibold text-espresso">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-espressoLight">Kondisi Fisik:</span>
+                            <span id="modalCondition" class="font-semibold text-sage">-</span>
+                        </div>
+                        <div class="pt-2 border-t border-espresso/10">
+                            <span class="text-espressoLight block mb-0.5">Catatan Minus:</span>
+                            <span id="modalMinus" class="font-medium text-terracotta">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button id="modalAddToCartBtn" class="flex-1 flex items-center justify-center gap-2 bg-espresso hover:bg-espressoLight text-cream py-3.5 px-5 rounded-full text-sm font-semibold transition-all active:scale-95">
+                        <i data-lucide="shopping-bag" class="w-4 h-4 text-gold"></i>
+                        <span>+ Keranjang</span>
+                    </button>
+                    <button id="modalQuickBuyBtn" class="flex-1 flex items-center justify-center gap-2 bg-sage hover:bg-sageDark text-white py-3.5 px-5 rounded-full text-sm font-semibold transition-all active:scale-95">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>Beli Cepat WA</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CART SLIDE-OVER DRAWER ==================== -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div id="cartBackdrop" onclick="toggleCart(false)" class="fixed inset-0 bg-espresso/50 backdrop-blur-xs opacity-0 transition-opacity duration-300"></div>
+
+        <!-- Drawer Panel -->
+        <div id="cartPanel" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-cream shadow-2xl border-l border-espresso/10 flex flex-col transform translate-x-full transition-transform duration-300 ease-out">
+            
+            <!-- Drawer Header -->
+            <div class="p-5 sm:p-6 bg-white border-b border-espresso/10 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 text-terracotta"></i>
+                    <h3 class="font-serif text-xl font-bold text-espresso">Keranjang Thrift</h3>
+                    <span id="drawerCartCount" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-creamDark text-espresso">0 item</span>
+                </div>
+                <button onclick="toggleCart(false)" aria-label="Tutup Keranjang" class="p-2 rounded-full hover:bg-creamDark text-espresso transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Drawer Scrollable Body -->
+            <div class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
+                
+                <!-- Cart Items List -->
+                <div id="cartItemsContainer" class="space-y-4">
+                    <!-- Injected via JS -->
+                </div>
+
+                <!-- Buyer Form (Shown when cart has items) -->
+                <div id="checkoutFormSection" class="hidden pt-4 border-t border-espresso/10 space-y-4">
+                    <h4 class="font-serif text-lg font-bold text-espresso flex items-center gap-2">
+                        <i data-lucide="clipboard-list" class="w-4 h-4 text-sage"></i>
+                        Data Pengiriman & WhatsApp
+                    </h4>
+
+                    <!-- Buyer Name -->
+                    <div>
+                        <label for="buyerName" class="block text-xs font-semibold text-espresso mb-1">Nama Lengkap Pembeli *</label>
+                        <input 
+                            type="text" 
+                            id="buyerName" 
+                            placeholder="Contoh: Dimas Pratama"
+                            class="w-full px-4 py-2.5 rounded-xl bg-white border border-espresso/15 text-sm text-espresso focus:outline-none focus:border-sage"
+                        >
+                    </div>
+
+                    <!-- Buyer Address -->
+                    <div>
+                        <label for="buyerAddress" class="block text-xs font-semibold text-espresso mb-1">Alamat Lengkap Pengiriman *</label>
+                        <textarea 
+                            id="buyerAddress" 
+                            rows="2" 
+                            placeholder="Jalan, No. Rumah, Kecamatan, Kota, Kode Pos"
+                            class="w-full px-4 py-2.5 rounded-xl bg-white border border-espresso/15 text-sm text-espresso focus:outline-none focus:border-sage"
+                        ></textarea>
+                    </div>
+
+                    <!-- Shipping Method -->
+                    <div>
+                        <label for="shippingMethod" class="block text-xs font-semibold text-espresso mb-1">Pilihan Ekspedisi / Pengiriman</label>
+                        <select 
+                            id="shippingMethod" 
+                            class="w-full px-4 py-2.5 rounded-xl bg-white border border-espresso/15 text-sm text-espresso focus:outline-none focus:border-sage"
+                        >
+                            <option value="J&T Express (Reguler)">J&T Express (Reguler)</option>
+                            <option value="JNE Reguler / YES">JNE Reguler / YES</option>
+                            <option value="SiCepat BEST / Halu">SiCepat BEST / Halu</option>
+                            <option value="GoSend / GrabExpress (Instan)">GoSend / GrabExpress (Instan)</option>
+                            <option value="COD / Ambil di Toko">COD / Ambil di Toko</option>
+                        </select>
+                    </div>
+
+                    <!-- Order Notes -->
+                    <div>
+                        <label for="buyerNotes" class="block text-xs font-semibold text-espresso mb-1">Catatan Tambahan (Opsional)</label>
+                        <input 
+                            type="text" 
+                            id="buyerNotes" 
+                            placeholder="Misal: Tolong kirim video detail sebelum dikirim"
+                            class="w-full px-4 py-2.5 rounded-xl bg-white border border-espresso/15 text-sm text-espresso focus:outline-none focus:border-sage"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drawer Footer -->
+            <div id="cartFooter" class="hidden p-5 sm:p-6 bg-white border-t border-espresso/10 space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-espressoLight">Total Estimasi Produk</span>
+                    <span id="cartTotalPrice" class="font-serif text-2xl font-bold text-espresso">Rp 0</span>
+                </div>
+                <button 
+                    onclick="checkoutToWhatsApp()" 
+                    class="w-full flex items-center justify-center gap-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white py-3.5 px-6 rounded-full font-bold text-sm sm:text-base shadow-md transition-all active:scale-95"
+                >
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                    <span>Order Langsung via WhatsApp</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CUSTOM TOAST NOTIFICATION ==================== -->
+    <div id="toastContainer" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2"></div>
+
+    <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+    <script>
+        // =========================================================================
+        // KONFIGURASI NOMOR WHATSAPP ADMIN / PENJUAL (TERKUNCI)
+        // Ganti nomor di bawah ini dengan nomor WhatsApp toko Anda (awali dengan 62)
+        // =========================================================================
+        const ADMIN_WHATSAPP_NUMBER = "6281234567890";
+
+        // 1. DATA PRODUK THRIFTING (10 ITEM LENGKAP SEMUA KATEGORI)
+        const products = [
+            {
+                id: 'THR-01',
+                name: '90s Heavyweight Vintage Denim Jacket',
+                category: 'Jaket',
+                price: 245000,
+                condition: 'Vintage Rare 94%',
+                badgeColor: 'bg-terracotta text-white',
+                size: 'L (Fit XL)',
+                dimensions: 'P 67 cm x L 60 cm',
+                minus: 'Fading alami vintage di bagian kerah & lipatan lengan (estetik), tanpa sobek.',
+                description: 'Jaket denim klasik era 90-an dengan bahan katun 14oz tebal dan kancing emboss tembaga asli. Sudah dicuci bersih dan siap dipakai layering.',
+                image: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-02',
+                name: 'Retro 90s Colorblock Windbreaker Jacket',
+                category: 'Jaket',
+                price: 185000,
+                condition: 'Like New 96%',
+                badgeColor: 'bg-sage text-white',
+                size: 'XL',
+                dimensions: 'P 71 cm x L 63 cm',
+                minus: 'No minus, karet lengan dan pinggang masih sangat kencang.',
+                description: 'Track jacket / windbreaker bergaya retro colorblock dengan lapisan furing jaring di bagian dalam. Ringan, tahan angin, dan sangat nyaman untuk harian.',
+                image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-03',
+                name: 'Vintage Washed Graphic Band Tee',
+                category: 'Baju',
+                price: 115000,
+                condition: 'Good Condition 92%',
+                badgeColor: 'bg-espresso text-gold',
+                size: 'L',
+                dimensions: 'P 70 cm x L 55 cm',
+                minus: 'Sablon crack halus natural pemakaian vintage, kain katun lembut bebas lubang.',
+                description: 'Kaos vintage warna charcoal washed dengan bahan 100% combed cotton built-up (tanpa jahitan samping). Jatuh sempurna untuk gaya streetwear.',
+                image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-04',
+                name: 'Oversized Earth-Tone Flannel Shirt',
+                category: 'Baju',
+                price: 135000,
+                condition: 'Like New 95%',
+                badgeColor: 'bg-sage text-white',
+                size: 'XL (Oversized)',
+                dimensions: 'P 75 cm x L 61 cm',
+                minus: 'No minus, semua kancing lengkap original beserta kancing cadangan.',
+                description: 'Kemeja flanel kotak-kotak bernuansa hangat cokelat tanah dan krem. Bahan katun flannel tebal namun adem, cocok dijadikan outer maupun kemeja utama.',
+                image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-05',
+                name: 'Tactical Baggy Cargo Pants Olive',
+                category: 'Celana',
+                price: 175000,
+                condition: 'Like New 95%',
+                badgeColor: 'bg-sage text-white',
+                size: '32 (Pinggang 84 cm)',
+                dimensions: 'P 102 cm x Open Leg 23 cm',
+                minus: 'No minus, tali serut di ujung pergelangan kaki masih utuh.',
+                description: 'Celana cargo potongan baggy dengan 6 saku fungsional berbahan ripstop katun kuat. Warna sage olive pekat yang mudah dipadukan dengan atasan netral.',
+                image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-06',
+                name: 'Classic Straight Fit Vintage Blue Jeans',
+                category: 'Celana',
+                price: 165000,
+                condition: 'Good Condition 91%',
+                badgeColor: 'bg-espresso text-gold',
+                size: '31 (Pinggang 80 cm)',
+                dimensions: 'P 100 cm x Open Leg 21 cm',
+                minus: 'Sedikit heel drag halus di bagian bawah belakang kaki celana.',
+                description: 'Celana denim potongan straight klasik dengan warna medium wash blue yang autentik. Resleting YKK lancar dan jahitan rantai kokoh.',
+                image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-07',
+                name: 'Vintage Corduroy 6-Panel Dad Cap',
+                category: 'Topi',
+                price: 85000,
+                condition: 'Like New 97%',
+                badgeColor: 'bg-sage text-white',
+                size: 'All Size (Adjustable)',
+                dimensions: 'Lingkar Kepala 54 - 61 cm',
+                minus: 'No minus, strap pengatur belakang berbahan kulit sintetis mulus.',
+                description: 'Topi bahan corduroy lembut warna cokelat hangat dengan bordir minimalis di bagian depan. Sudah dibersihkan dan dibentuk ulang agar tetap presisi.',
+                image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-08',
+                name: 'Retro Outdoor Canvas Bucket Hat',
+                category: 'Topi',
+                price: 75000,
+                condition: 'Good Condition 93%',
+                badgeColor: 'bg-terracotta text-white',
+                size: 'All Size (M/L)',
+                dimensions: 'Lingkar Kepala 58 cm',
+                minus: 'No minus, warna krem hangat masih sangat bersih.',
+                description: 'Bucket hat kanvas bergaya outdoor retro 90-an. Cocok untuk melengkapi tampilan kasual harian maupun aktivitas luar ruangan.',
+                image: 'https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-09',
+                name: 'Classic Retro Court Sneakers Cream',
+                category: 'Sepatu',
+                price: 285000,
+                condition: 'Like New 94%',
+                badgeColor: 'bg-sage text-white',
+                size: '42',
+                dimensions: 'Insole 26.5 cm',
+                minus: 'Outsole pemakaian wajar (94% tebal), tanpa box asli (diganti box pengganti).',
+                description: 'Sneakers retro kulit sintetis premium kombinasi warna off-white dan aksen hijau klasik. Sol empuk dan sudah di-deep clean menyeluruh.',
+                image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'THR-10',
+                name: 'Heritage Tan Leather Work Boots',
+                category: 'Sepatu',
+                price: 340000,
+                condition: 'Vintage Rare 92%',
+                badgeColor: 'bg-terracotta text-white',
+                size: '43',
+                dimensions: 'Insole 27.5 cm',
+                minus: 'Crease (kerutan) alami kulit asli di punggung kaki yang menambah karakter gagah.',
+                description: 'Sepatu boots kulit asli warna tan cokelat tua dengan konstruksi jahitan sol keliling yang tangguh. Sudah diberi leather balm agar kulit tetap lentur.',
+                image: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=800&q=80'
+            }
+        ];
+
+        // 2. STATE APLIKASI
+        let currentCategory = 'Semua';
+        let searchQuery = '';
+        let cart = []; // Format: { product, qty }
+
+        // 3. FORMAT RUPIAH
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(number);
+        }
+
+        // 4. RENDER KATALOG PRODUK
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyState');
+            const countEl = document.getElementById('productCount');
+
+            // Filter berdasarkan kategori & kata kunci pencarian
+            const filtered = products.filter(item => {
+                const matchCat = currentCategory === 'Semua' || item.category === currentCategory;
+                const q = searchQuery.toLowerCase();
+                const matchSearch = 
+                    item.name.toLowerCase().includes(q) ||
+                    item.category.toLowerCase().includes(q) ||
+                    item.size.toLowerCase().includes(q) ||
+                    item.condition.toLowerCase().includes(q);
+                return matchCat && matchSearch;
+            });
+
+            countEl.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map((product, index) => `
+                <article 
+                    class="reveal group bg-white rounded-3xl overflow-hidden border border-espresso/10 shadow-card hover:shadow-soft transition-all duration-500 flex flex-col justify-between"
+                    style="transition-delay: ${Math.min(index * 60, 300)}ms;"
+                >
+                    <!-- Clickable Image & Top Info -->
+                    <div onclick="openProductModal('${product.id}')" class="cursor-pointer">
+                        <div class="relative aspect-[4/5] bg-creamDark overflow-hidden">
+                            <img 
+                                src="${product.image}" 
+                                alt="${product.name}" 
+                                loading="lazy"
+                                onerror="this.src='https://placehold.co/600x750/F2ECE1/1C1917?text=${encodeURIComponent(product.category)}'"
+                                class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                            >
+                            <!-- Condition Badge -->
+                            <span class="absolute top-3.5 left-3.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide shadow-sm ${product.badgeColor}">
+                                ${product.condition}
+                            </span>
+
+                            <!-- Size Pill -->
+                            <span class="absolute bottom-3.5 left-3.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/95 backdrop-blur-xs text-espresso shadow-xs">
+                                Size ${product.size}
+                            </span>
+
+                            <!-- Quick Inspect Icon on Hover -->
+                            <div class="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/90 text-espresso flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm">
+                                <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+
+                        <div class="p-5 pb-3">
+                            <div class="flex items-center justify-between text-xs text-espressoLight mb-1">
+                                <span class="uppercase tracking-wider font-semibold text-terracotta">${product.category}</span>
+                                <span>${product.dimensions.split('x')[0]}</span>
+                            </div>
+                            <h3 class="font-serif text-lg font-bold text-espresso group-hover:text-terracotta transition-colors line-clamp-2 leading-snug">
+                                ${product.name}
+                            </h3>
+                            <p class="text-base sm:text-lg font-bold text-sage mt-2">
+                                ${formatRupiah(product.price)}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card Action Buttons -->
+                    <div class="px-5 pb-5 pt-2 flex items-center gap-2">
+                        <button 
+                            onclick="addToCart('${product.id}')" 
+                            class="flex-1 flex items-center justify-center gap-1.5 bg-espresso hover:bg-espressoLight text-cream py-2.5 px-3 rounded-full text-xs sm:text-sm font-semibold transition-all active:scale-95"
+                        >
+                            <i data-lucide="plus" class="w-4 h-4 text-gold"></i>
+                            <span>Keranjang</span>
+                        </button>
+                        <button 
+                            onclick="quickBuySingle('${product.id}')" 
+                            title="Beli Cepat via WhatsApp"
+                            class="flex items-center justify-center gap-1.5 bg-creamDark hover:bg-sage hover:text-white text-espresso py-2.5 px-3.5 rounded-full text-xs sm:text-sm font-semibold transition-all active:scale-95"
+                        >
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Beli Cepat</span>
+                        </button>
+                    </div>
+                </article>
+            `).join('');
+
+            // Re-initialize Lucide icons & Scroll Observer
+            lucide.createIcons();
+            observeElements();
+        }
+
+        // 5. FILTER & SEARCH HANDLERS
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Update active button styling
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.className = 'cat-btn active shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-espresso text-cream shadow-sm';
+                } else {
+                    btn.className = 'cat-btn shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-white text-espressoLight hover:bg-creamDark border border-espresso/10';
+                }
+            });
+
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim();
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchQuery.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderProducts();
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('searchInput');
+            input.value = '';
+            handleSearch('');
+            input.focus();
+        }
+
+        function resetFilters() {
+            clearSearch();
+            filterCategory('Semua');
+        }
+
+        // 6. PRODUCT DETAIL MODAL
+        function openProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            document.getElementById('modalImg').src = product.image;
+            document.getElementById('modalImg').onerror = function() {
+                this.src = `https://placehold.co/800x800/F2ECE1/1C1917?text=${encodeURIComponent(product.name)}`;
+            };
+            
+            const badgeEl = document.getElementById('modalBadge');
+            badgeEl.textContent = product.condition;
+            badgeEl.className = `absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold tracking-wide shadow-sm ${product.badgeColor}`;
+
+            document.getElementById('modalCategory').textContent = product.category;
+            document.getElementById('modalSizeBadge').textContent = `Size ${product.size}`;
+            document.getElementById('modalTitle').textContent = product.name;
+            document.getElementById('modalPrice').textContent = formatRupiah(product.price);
+            document.getElementById('modalDesc').textContent = product.description;
+            document.getElementById('modalSize').textContent = product.size;
+            document.getElementById('modalDimensions').textContent = product.dimensions;
+            document.getElementById('modalCondition').textContent = product.condition;
+            document.getElementById('modalMinus').textContent = product.minus;
+
+            // Bind modal buttons
+            document.getElementById('modalAddToCartBtn').onclick = () => {
+                addToCart(product.id);
+                closeProductModal();
+            };
+            document.getElementById('modalQuickBuyBtn').onclick = () => {
+                closeProductModal();
+                quickBuySingle(product.id);
+            };
+
+            const modal = document.getElementById('productModal');
+            const content = document.getElementById('productModalContent');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            lucide.createIcons();
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('productModal');
+            const content = document.getElementById('productModalContent');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 250);
+        }
+
+        // 7. KERANJANG BELANJA (CART LOGIC)
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existing = cart.find(item => item.product.id === productId);
+            if (existing) {
+                existing.qty += 1;
+                showToast(`Jumlah "${product.name}" diperbarui di keranjang.`);
+            } else {
+                cart.push({ product, qty: 1 });
+                showToast(`"${product.name}" ditambahkan ke keranjang!`);
+            }
+
+            updateCartUI(true);
+        }
+
+        function updateQty(productId, delta) {
+            const index = cart.findIndex(item => item.product.id === productId);
+            if (index === -1) return;
+
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI(false);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.product.id !== productId);
+            updateCartUI(false);
+        }
+
+        function quickBuySingle(productId) {
+            const existing = cart.find(item => item.product.id === productId);
+            if (!existing) {
+                const product = products.find(p => p.id === productId);
+                if (product) cart.push({ product, qty: 1 });
+                updateCartUI(true);
+            }
+            toggleCart(true);
+        }
+
+        function updateCartUI(animateBadge = false) {
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
+
+            // Navbar Badge
+            const navBadge = document.getElementById('navCartCount');
+            navBadge.textContent = totalItems;
+            if (animateBadge) {
+                navBadge.classList.remove('badge-pop');
+                void navBadge.offsetWidth; // trigger reflow
+                navBadge.classList.add('badge-pop');
+            }
+
+            // Drawer Header & Footer
+            document.getElementById('drawerCartCount').textContent = `${totalItems} item`;
+            document.getElementById('cartTotalPrice').textContent = formatRupiah(totalPrice);
+
+            const container = document.getElementById('cartItemsContainer');
+            const formSection = document.getElementById('checkoutFormSection');
+            const footer = document.getElementById('cartFooter');
+
+            if (cart.length === 0) {
+                formSection.classList.add('hidden');
+                footer.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="text-center py-12 px-4">
+                        <div class="w-16 h-16 rounded-full bg-creamDark text-espressoLight mx-auto flex items-center justify-center mb-4">
+                            <i data-lucide="shopping-bag" class="w-7 h-7"></i>
+                        </div>
+                        <h4 class="font-serif text-xl font-bold text-espresso">Keranjang Masih Kosong</h4>
+                        <p class="text-xs sm:text-sm text-espressoLight mt-1.5 max-w-xs mx-auto">Pilih item thrift favoritmu dari katalog sebelum kehabisan stok!</p>
+                        <button onclick="toggleCart(false)" class="mt-5 px-6 py-2.5 rounded-full bg-espresso text-cream text-xs sm:text-sm font-semibold hover:bg-espressoLight transition-colors">
+                            Lihat Katalog
+                        </button>
+                    </div>
+                `;
+            } else {
+                formSection.classList.remove('hidden');
+                footer.classList.remove('hidden');
+                
+                container.innerHTML = cart.map(({ product, qty }) => `
+                    <div class="flex gap-3.5 p-3 rounded-2xl bg-white border border-espresso/10 shadow-xs">
+                        <img src="${product.image}" alt="${product.name}" class="w-20 h-24 rounded-xl object-cover bg-creamDark shrink-0">
+                        <div class="flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-start justify-between gap-2">
+                                    <h5 class="font-serif font-bold text-sm text-espresso leading-snug line-clamp-2">${product.name}</h5>
+                                    <button onclick="removeFromCart('${product.id}')" aria-label="Hapus item" class="text-espressoLight hover:text-terracotta transition-colors p-0.5">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <p class="text-[11px] text-espressoLight mt-0.5">Size ${product.size} • ${product.category}</p>
+                            </div>
+
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-sm font-bold text-sage">${formatRupiah(product.price * qty)}</span>
+                                
+                                <!-- Qty Controls -->
+                                <div class="flex items-center gap-2 bg-creamDark rounded-full px-2 py-0.5">
+                                    <button onclick="updateQty('${product.id}', -1)" class="w-6 h-6 rounded-full flex items-center justify-center text-espresso hover:bg-white transition-colors font-bold text-sm">-</button>
+                                    <span class="text-xs font-bold w-4 text-center">${qty}</span>
+                                    <button onclick="updateQty('${product.id}', 1)" class="w-6 h-6 rounded-full flex items-center justify-center text-espresso hover:bg-white transition-colors font-bold text-sm">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            lucide.createIcons();
+        }
+
+        // 8. TOGGLE CART DRAWER
+        function toggleCart(open) {
+            const drawer = document.getElementById('cartDrawer');
+            const backdrop = document.getElementById('cartBackdrop');
+            const panel = document.getElementById('cartPanel');
+
+            if (open) {
+                drawer.classList.remove('hidden');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                    panel.classList.remove('translate-x-full');
+                }, 10);
+            } else {
+                backdrop.classList.add('opacity-0');
+                panel.classList.add('translate-x-full');
+                setTimeout(() => {
+                    drawer.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // 9. WHATSAPP CHECKOUT FORMATTER
+        function sanitizePhone(phone) {
+            let clean = phone.replace(/\D/g, '');
+            if (clean.startsWith('0')) {
+                clean = '62' + clean.slice(1);
+            }
+            return clean || '6281234567890';
+        }
+
+        function checkoutToWhatsApp() {
+            if (cart.length === 0) {
+                showToast('Keranjang belanja masih kosong!', 'error');
+                return;
+            }
+
+            const buyerName = document.getElementById('buyerName').value.trim();
+            const buyerAddress = document.getElementById('buyerAddress').value.trim();
+            const shippingMethod = document.getElementById('shippingMethod').value;
+            const buyerNotes = document.getElementById('buyerNotes').value.trim();
+            const sellerPhone = sanitizePhone(ADMIN_WHATSAPP_NUMBER);
+
+            if (!buyerName) {
+                showToast('Mohon isi Nama Lengkap Anda terlebih dahulu.', 'error');
+                document.getElementById('buyerName').focus();
+                return;
+            }
+
+            if (!buyerAddress) {
+                showToast('Mohon isi Alamat Pengiriman Anda.', 'error');
+                document.getElementById('buyerAddress').focus();
+                return;
+            }
+
+            // Susun rincian daftar produk
+            let itemLines = '';
+            let grandTotal = 0;
+
+            cart.forEach(({ product, qty }, idx) => {
+                const subtotal = product.price * qty;
+                grandTotal += subtotal;
+                itemLines += `${idx + 1}. *${product.name}*\n   • Kode: ${product.id} | Size: ${product.size}\n   • Jumlah: ${qty}x (${formatRupiah(subtotal)})\n`;
+            });
+
+            // Format Pesan WhatsApp Rapi
+            const message = 
+`Halo Admin *Arsip Vintage Thrift*! 👋
+Saya ingin memesan item thrifting berikut:
+
+*DETAIL PESANAN:*
+${itemLines}
+*Total Harga Produk:* ${formatRupiah(grandTotal)}
+*(Belum termasuk ongkos kirim)*
+
+*DATA PENGIRIMAN:*
+• Nama: ${buyerName}
+• Alamat: ${buyerAddress}
+• Ekspedisi: ${shippingMethod}
+• Catatan: ${buyerNotes || '-'}
+
+Mohon info ketersediaan stok dan total beserta ongkirnya ya Kak. Terima kasih! 🙏`;
+
+            const waUrl = `https://wa.me/${sellerPhone}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        function openDirectWhatsApp() {
+            const sellerPhone = sanitizePhone(ADMIN_WHATSAPP_NUMBER);
+            const message = `Halo Admin *Arsip Vintage Thrift*! Saya sedang melihat katalog online dan ingin bertanya mengenai koleksi yang tersedia.`;
+            window.open(`https://wa.me/${sellerPhone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // 10. CUSTOM TOAST NOTIFICATION (PENGGANTI ALERT)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'error' ? 'bg-terracotta text-white' : 'bg-espresso text-cream border border-gold/40';
+            const iconName = type === 'error' ? 'alert-circle' : 'check-circle-2';
+
+            toast.className = `${bgClass} px-4 py-3 rounded-full shadow-lg flex items-center gap-2.5 text-xs sm:text-sm font-medium transform transition-all duration-300 translate-y-4 opacity-0`;
+            toast.innerHTML = `
+                <i data-lucide="${iconName}" class="w-4 h-4 text-gold shrink-0"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            // Animate In
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            });
+
+            // Animate Out & Remove
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+
+        // 11. INTERSECTION OBSERVER (SOFT SCROLL REVEAL ANIMATION)
+        function observeElements() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -30px 0px'
+            });
+
+            reveals.forEach(el => observer.observe(el));
+        }
+
+        // 12. NAVBAR SCROLL SHADOW EFFECT
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-soft');
+            } else {
+                navbar.classList.remove('shadow-soft');
+            }
+        });
+
+        // 13. INITIALIZE ON LOAD
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            updateCartUI(false);
+            observeElements();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
